@@ -1,83 +1,20 @@
-// import React, {Component} from "react";
-// import {View, Text, Button, StyleSheet, TouchableOpacity} from "react-native";
-// import QRCode from "react-native-qrcode-svg"; // Import thư viện QRCode
-
-// class ProfileScreen extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             qrData: null, // Dữ liệu để tạo mã QR
-//         };
-//     }
-
-//     // Hàm để tạo mã QR dùng để kết bạn
-//     handleGenerateQRCode = () => {
-//         // Logic để tạo mã QR dùng để kết bạn ở đây
-//         // Ví dụ: sử dụng dữ liệu người dùng và tạo mã QR
-//         const userData = {
-//             name: "John Doe",
-//             phoneNumber: "123-456-7890",
-//             email: "john@example.com",
-//         };
-
-//         // Chuyển dữ liệu người dùng thành một chuỗi JSON
-//         const userDataJSON = JSON.stringify(userData);
-
-//         // Sử dụng chuỗi JSON để tạo mã QR
-//         this.setState({qrData: userDataJSON});
-//     };
-
-//     render() {
-//         return (
-//             <View style={styles.container}>
-//                 {/* Các thông tin cá nhân */}
-//                 {/* ... (các thông tin cá nhân) */}
-
-//                 {/* Mã QR */}
-//                 <View style={styles.qrContainer}>
-//                     {this.state.qrData ? (
-//                         <QRCode
-//                             value={this.state.qrData} // Dữ liệu để tạo mã QR
-//                             size={200} // Kích thước của mã QR
-//                         />
-//                     ) : null}
-//                 </View>
-
-//                 {/* Nút tạo mã QR */}
-//                 <TouchableOpacity style={styles.button} onPress={this.handleGenerateQRCode}>
-//                     <Text style={styles.buttonText}>Tạo Mã QR Kết Bạn</Text>
-//                 </TouchableOpacity>
-
-//                 {/* ... (các nút và chức năng khác) */}
-//             </View>
-//         );
-//     }
-// }
-
-// // Các styles
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         justifyContent: "center",
-//         alignItems: "center",
-//         backgroundColor: "#f4f4f4",
-//     },
-//     // ... (styles khác)
-// });
-
-// export default ProfileScreen;
-
-// ProfileScreen.js
 import React, { Component } from "react";
-import { View, Text, Button, TextInput, styles } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import QRCode from "react-native-qrcode-svg";
-import { TouchableOpacity } from "react-native";
+
 class ProfileScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isEditing: false,
-      name: "John Doe", // Thông tin cá nhân mặc định
+      name: "John Doe",
       email: "john.doe@example.com",
       phone: "123-456-7890",
       friendsList: [],
@@ -100,46 +37,154 @@ class ProfileScreen extends Component {
     const { isEditing, name, email, phone, friendsList } = this.state;
 
     return (
-      <View>
-        <Text>Profile</Text>
+      <View style={styles.container}>
+        <View style={styles.profileHeader}>
+          <Text style={styles.headerText}>Profile</Text>
+        </View>
         {isEditing ? (
-          <View>
+          <View style={styles.editProfileContainer}>
             <TextInput
+              style={styles.input}
               placeholder="Name"
               value={name}
               onChangeText={(text) => this.setState({ name: text })}
             />
             <TextInput
+              style={styles.input}
               placeholder="Email"
               value={email}
               onChangeText={(text) => this.setState({ email: text })}
             />
             <TextInput
+              style={styles.input}
               placeholder="Phone"
               value={phone}
               onChangeText={(text) => this.setState({ phone: text })}
             />
-            <Button title="Save" onPress={this.saveProfile} />
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={this.saveProfile}
+            >
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
           </View>
         ) : (
-          <View>
-            <Text>Name: {name}</Text>
-            <Text>Email: {email}</Text>
-            <Text>Phone: {phone}</Text>
-            <Button title="Edit" onPress={this.toggleEdit} />
+          <View style={styles.viewProfileContainer}>
+            <Text style={styles.label}>Name:</Text>
+            <Text style={styles.value}>{name}</Text>
+            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.value}>{email}</Text>
+            <Text style={styles.label}>Phone:</Text>
+            <Text style={styles.value}>{phone}</Text>
             <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate("FriendList", { friendsList })
-              }
+              style={styles.editButton}
+              onPress={this.toggleEdit}
             >
-              <Text>View Friends</Text>
+              <Text style={styles.editButtonText}>Edit</Text>
             </TouchableOpacity>
           </View>
         )}
-        <QRCode value={`${name}, ${email}, ${phone}`} size={200} />
+        <View style={styles.qrCodeContainer}>
+          <QRCode value={`${name}, ${email}, ${phone}`} size={200} />
+        </View>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f0f2f5",
+    padding: 20,
+  },
+  profileHeader: {
+    backgroundColor: "#1877f2",
+    padding: 10,
+    marginBottom: 20,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+  },
+  editProfileContainer: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  input: {
+    marginBottom: 10,
+    padding: 10,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  saveButton: {
+    backgroundColor: "#1877f2",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  viewProfileContainer: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  value: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  editButton: {
+    backgroundColor: "#1877f2",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  editButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  viewFriendsButton: {
+    backgroundColor: "#4caf50",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  viewFriendsButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  qrCodeContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+});
 
 export default ProfileScreen;

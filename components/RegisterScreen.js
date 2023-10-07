@@ -1,79 +1,85 @@
-import React, {Component} from "react";
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, Button} from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Button,
+} from "react-native";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 
-class RegisterScreen extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            newUsername: "",
-            newPassword: "",
-        };
+const RegisterScreen = ({ navigation }) => {
+  const [newUsername, setNewUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  const handleRegister = async () => {
+    try {
+      await createUserWithEmailAndPassword(auth, newUsername, newPassword);
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Đăng ký thất bại: ", error);
     }
+  };
 
-    handleBack = () => {
-        this.props.navigation.navigate("Login");
-    };
+  const handleBack = () => {
+    navigation.navigate("Login");
+  };
 
-    handleRegister = () => {
-        const {newUsername, newPassword} = this.state;
-
-        // Kiểm tra xem thông tin tài khoản mới có hợp lệ không và thêm vào danh sách tài khoản hợp lệ
-        // (Bạn cần thêm logic kiểm tra và thêm tài khoản vào danh sách tại đây)
-
-        // Chuyển hướng về trang đăng nhập sau khi đăng ký thành công
-        this.props.navigation.navigate("Login");
-    };
-
-    render() {
-        return (
-            <View style={styles.container}>
-                <TextInput style={styles.input} placeholder="Tên người dùng mới" onChangeText={(newUsername) => this.setState({newUsername})} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Mật khẩu mới"
-                    secureTextEntry={true}
-                    onChangeText={(newPassword) => this.setState({newPassword})}
-                />
-                <TouchableOpacity style={styles.button} onPress={this.handleRegister}>
-                    <Text style={styles.buttonText}>Đăng ký</Text>
-                </TouchableOpacity>
-                <Button title="Trở về" onPress={this.handleBack} />
-            </View>
-        );
-    }
-}
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Đăng Ký</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Tên người dùng mới"
+        onChangeText={(text) => setNewUsername(text)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Mật khẩu mới"
+        secureTextEntry={true}
+        onChangeText={(text) => setNewPassword(text)}
+      />
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Đăng ký</Text>
+      </TouchableOpacity>
+      <Button title="Trở về" onPress={handleBack} />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f4f4f4",
-    },
-    title: {
-        fontSize: 24,
-        marginBottom: 20,
-    },
-    input: {
-        width: "80%",
-        padding: 10,
-        marginVertical: 10,
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-    },
-    button: {
-        width: "80%",
-        backgroundColor: "#007BFF",
-        padding: 15,
-        borderRadius: 5,
-        marginTop: 20,
-    },
-    buttonText: {
-        color: "#fff",
-        textAlign: "center",
-        fontSize: 16,
-    },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f4f4f4",
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  input: {
+    width: "80%",
+    padding: 10,
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+  },
+  button: {
+    width: "80%",
+    backgroundColor: "#007BFF",
+    padding: 15,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 16,
+  },
 });
 
 export default RegisterScreen;

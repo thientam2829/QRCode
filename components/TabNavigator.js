@@ -37,7 +37,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
       },
     },
     QRScanner: {
-      screen: QRCodeScanner,
+      screen: QRCodeScannerScreen,
       navigationOptions: {
         tabBarLabel: "Quét QR",
         tabBarIcon: ({ tintColor }) => (
